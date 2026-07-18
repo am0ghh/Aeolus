@@ -1,0 +1,4 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "Aeolus_symbols")(type "KiCad")(uri "${KIPRJMOD}/Aeolus_symbols.kicad_sym")(options "")(descr ""))
+)

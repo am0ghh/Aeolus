@@ -1,0 +1,4 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "Aeolus_footprints")(type "KiCad")(uri "${KIPRJMOD}/Aeolus_footprints.pretty")(options "")(descr ""))
+)

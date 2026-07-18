@@ -1,0 +1,177 @@
+aAEOLUS — KICAD SCHEMATIC GUIDE
+================================
+ESP32-C3 smart fan controller: IR TX booster, IR RX, OLED, LDR, thermistor.
+You already have the custom ESP32-C3 symbol. Place that first, then wire
+everything below to its GPIO labels.
+
+Use net labels (Place → Net Label) to keep wires clean instead of long rats-nest
+lines. You'll want at minimum: +3V3, +5V, GND, SDA, SCL, IR_TX, IR_RX, THERM_ADC, BTN.
+
+
+────────────────────────────────────────────────────────────────
+1. POWER RAILS
+────────────────────────────────────────────────────────────────
+The DevKit's onboard LDO gives you +3V3 from USB. USB VBUS gives +5V.
+Expose both as power symbols so every sub-circuit can reference them.
+
+  Symbol: PWR → VCC (label it +3V3)
+  Symbol: PWR → VCC (label it +5V)
+  Symbol: PWR → GND
+
+Place a 100nF decoupling cap (C_Small) from +3V3 to GND near the OLED
+connector, and another near the IR RX module. Small but good practice.
+
+
+────────────────────────────────────────────────────────────────
+2. IR TX BOOSTER  (GPIO5 → PN2222 → 2× IR LEDs)
+────────────────────────────────────────────────────────────────
+Symbols needed:
+  Q_NPN_BCE  (or search "Q_NPN" — use BCE pin order matching PN2222 TO-92)
+  R (×2)
+  LED (×2, use LED_Infrared if available, or plain LED)
+
+Connections:
+  GPIO5  ──[R2 220Ω]──▶ Base  (Q1 PN2222)
+  Emitter (Q1)         ──▶ GND
+
+  +5V    ──[R1 10Ω]──▶ D1 Anode (+)
+  D1 Cathode (−)       ──▶ D2 Anode (+)
+  D2 Cathode (−)       ──▶ Collector (Q1)
+
+Values to fill in:
+  R1 = 10Ω  ½W
+  R2 = 220Ω  ¼W
+  D1, D2 = IR LED (940nm, e.g. TSAL6400 or whatever you have)
+  Q1 = PN2222A  (double-check your part's pinout — E-B-C order varies by maker)
+
+Net label on Q1 Base node: IR_TX  → tie to ESP32 GPIO5 pin via same label.
+
+Annotation note: some KiCad NPN symbols have pins labeled C/B/E; others use
+1/2/3. Map Collector=C, Base=B, Emitter=E regardless of the number.
+
+
+────────────────────────────────────────────────────────────────
+3. IR RECEIVER  (GPIO3)
+────────────────────────────────────────────────────────────────
+Symbol: a generic 3-pin connector (Conn_01x03) is fine if you don't have the
+exact module symbol. Label the pins:
+  Pin 1 = VCC  → +3V3
+  Pin 2 = GND  → GND
+  Pin 3 = OUT  → IR_RX net label (ties to GPIO3)
+
+Common module footprint: VS1838B or TSOP38238 (38 kHz demodulator).
+Add a 100nF cap from the module's VCC to GND right at those pins.
+
+
+────────────────────────────────────────────────────────────────
+4. SSD1306 OLED  (I2C, GPIO7=SDA, GPIO6=SCL, address 0x3C)
+────────────────────────────────────────────────────────────────
+Symbol: a 4-pin connector (Conn_01x04) or look up Adafruit_SSD1306 in KiCad
+community libraries.
+
+Pins:
+  GND   → GND
+  VCC   → +3V3
+  SCL   → SCL net label (ties to GPIO6)
+  SDA   → SDA net label (ties to GPIO7)
+
+Pull-up resistors (I2C requires these if not already on the module PCB —
+most Adafruit/clone breakouts include them, so skip if yours does):
+  4.7kΩ from SDA to +3V3
+  4.7kΩ from SCL to +3V3
+
+Wire.setClock(400000) is set in firmware (fast mode) — these pull-up values
+are fine for that speed at short trace lengths.
+
+
+────────────────────────────────────────────────────────────────
+5. THERMISTOR (NTC)  (GPIO0 = ADC1_CH0)
+────────────────────────────────────────────────────────────────
+Voltage divider: fixed resistor on top, NTC on bottom.
+As temperature rises → NTC resistance drops → ADC voltage rises.
+
+  +3V3 ──[R4 10kΩ]──┬── THERM_ADC net label (ties to GPIO0)
+                      │
+                   [NTC thermistor]
+                      │
+                     GND
+
+Symbols:
+  R (R4, 10kΩ — this is Rfixed / THERM_SERIES_R in the firmware)
+  R_Thermistor (or Thermistor_NTC if in your KiCad library)
+
+Firmware defaults: nominal R = 10kΩ at 25°C, Beta = 3950.
+If your specific part has different values, you can update THERM_BETA and
+THERM_NOMINAL_R in main.cpp later.
+
+
+────────────────────────────────────────────────────────────────
+6. BUTTON  (GPIO10)
+────────────────────────────────────────────────────────────────
+Single press = toggle device active/inactive.
+Double tap (two presses within 300ms) = enter 10-second scan mode.
+Firmware enables the internal pull-up, so the line sits at 3.3V when open
+and is pulled to GND when pressed — no external pull-up resistor needed.
+
+Symbol: SW_Push  (Device library)
+
+Connections:
+  Pin 1 (A) → BTN net label (ties to GPIO10)
+  Pin 2 (B) → GND
+
+Optional: 100nF cap from Pin 1 to GND in parallel with the button.
+This is hardware debounce on top of the software debounce already in
+firmware — cheap insurance against noisy contacts, especially on a PCB.
+
+Net label on Pin 1: BTN  → ties to ESP32 GPIO10 pin via same label.
+
+
+────────────────────────────────────────────────────────────────
+7. ESP32-C3 PIN ASSIGNMENTS (your custom symbol)
+────────────────────────────────────────────────────────────────
+Connect net labels on the ESP32-C3 symbol to match these:
+
+  GPIO0  →  THERM_ADC
+  GPIO3  →  IR_RX
+  GPIO5  →  IR_TX
+  GPIO6  →  SCL
+  GPIO7  →  SDA
+  GPIO10 →  BTN
+  GND    →  GND  (connect all GND pins)
+  3V3    →  +3V3
+  5V/VBUS→  +5V   (only needed if your symbol exposes the VBUS pin)
+
+GPIO1 and GPIO4 are spare (ADC1_CH1/CH4), leave unconnected or add test points.
+GPIO2/8/9 are strapping pins — leave unconnected unless you know what you're doing.
+
+
+────────────────────────────────────────────────────────────────
+8. QUICK CHECKLIST BEFORE YOU RUN ERC
+────────────────────────────────────────────────────────────────
+[ ] Every component has a Reference and Value filled in (R1, R2 ... Q1, D1, D2, SW1)
+[ ] PWR_FLAG symbols on +3V3, +5V, and GND nets (ERC requires these)
+[ ] All net labels spelled identically — a stray space causes a disconnected net
+[ ] PN2222 pinout verified (E-B-C vs C-B-E depending on your symbol source)
+[ ] I2C pull-ups: present if your OLED module doesn't have them onboard
+[ ] Decoupling caps on OLED VCC and IR RX VCC
+[ ] GPIO4 left unconnected (was LDR, now spare)
+[ ] Button: one pin to BTN net, other to GND — no pull-up resistor (firmware uses internal)
+
+
+────────────────────────────────────────────────────────────────
+COMPONENT SUMMARY
+────────────────────────────────────────────────────────────────
+Ref   Value         Notes
+----  -------       -----
+U1    ESP32-C3      your custom symbol
+Q1    PN2222A       NPN transistor, TO-92
+D1    IR LED 940nm  series pair, no individual resistors needed
+D2    IR LED 940nm
+R1    10Ω  ½W       IR LED current limit (5V rail)
+R2    220Ω ¼W       Q1 base resistor
+R3    10kΩ ¼W       thermistor upper divider (Rfixed)
+RT1   10kΩ NTC      thermistor, B=3950
+J1    OLED SSD1306  4-pin I2C module
+J2    IR RX module  3-pin (VCC/GND/OUT), e.g. VS1838B
+SW1   SW_Push       tactile button, GPIO10; single press=on/off, double tap=scan mode
+C5    100nF         optional, across SW1 pins for hardware debounce
