@@ -4,6 +4,20 @@
 
 Named after Aeolus, the keeper of the winds.
 
+## Gallery
+
+**3D render**
+
+![Aeolus 3D render](images/3d-render.png)
+
+**PCB layout** (4-layer, black soldermask, silkscreen branding)
+
+![Aeolus PCB layout](images/pcb-layout.png)
+
+**Schematic**
+
+![Aeolus schematic](images/schematic.png)
+
 ## Background — this is v2 of my [fans](https://github.com/am0ghh/fans) project
 
 Aeolus is a ground-up redesign of my earlier [dorm-room fan automation project](https://github.com/am0ghh/fans). The original ("fans") was an Arduino Uno R3 on a breadboard: a DHT11 sensor, an IR receiver, and a transistor-driven IR LED that automatically toggled the fan on hysteresis. It worked, but it was bulky, code-only, and limited to hardcoded remote codes.
