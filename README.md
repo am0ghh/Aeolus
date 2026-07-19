@@ -32,7 +32,7 @@ The transistor-buffered IR transmitter (the key range fix from v1 — extends us
 - **IR receiver** (38 kHz demodulating, VS1838B-style) for learning remote codes
 - **IR LED (940 nm)** transmitter, transistor-buffered for range
 - **Momentary push button** for manual control / mode switching
-- Custom 4-layer KiCad PCB (`Untitled/Aeolus.kicad_pcb` / `.kicad_sch`)
+- Custom 4-layer KiCad PCB (`hardware/Aeolus.kicad_pcb` / `.kicad_sch`)
 
 ### Pin map
 
@@ -70,12 +70,12 @@ Board and framework are configured in [`platformio.ini`](platformio.ini). Librar
 
 ## PCB & hardware design
 
-The KiCad 9 project is in [`Untitled/`](Untitled/) (schematic, PCB, custom symbol/footprint libraries). Highlights:
+The KiCad 9 project is in [`hardware/`](hardware/) (schematic, PCB, custom symbol/footprint libraries). Highlights:
 
 - **4-layer stackup** (signal / ground plane / power plane / signal) — overkill for the node count, but clean power distribution and a good demonstration of multi-layer routing.
 - **Custom ESP32-C3 SuperMini symbol and footprint**, pin-labeled to match the actual module.
 - **Custom silkscreen branding** (the "Aeolus" wordmark) generated from the artwork in [`branding/`](branding/).
-- 3D models for the ESP32-C3, OLED, and IR components in `Untitled/Aeolus.3dshapes/` for a complete 3D render.
+- 3D models for the ESP32-C3, OLED, and IR components in `hardware/Aeolus.3dshapes/` for a complete 3D render.
 
 ## License
 

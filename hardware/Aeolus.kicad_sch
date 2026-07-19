@@ -2639,7 +2639,7 @@
 			(uuid "47a2b013-5f7e-4d06-ba8a-98d32a372103")
 		)
 		(instances
-			(project "Untitled"
+			(project "Aeolus"
 				(path "/b53850d0-3491-4b19-85a4-e0df2b6f5022"
 					(reference "#FLG02")
 					(unit 1)
@@ -3040,7 +3040,7 @@
 			(uuid "c9d91f7a-aa29-4605-86f9-99429405f147")
 		)
 		(instances
-			(project "Untitled"
+			(project "Aeolus"
 				(path "/b53850d0-3491-4b19-85a4-e0df2b6f5022"
 					(reference "#FLG03")
 					(unit 1)
