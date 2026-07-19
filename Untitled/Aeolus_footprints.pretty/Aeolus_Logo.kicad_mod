@@ -1,0 +1,65 @@
+(footprint "Aeolus_Logo"
+	(version 20241229)
+	(generator "custom")
+	(generator_version "9.0")
+	(layer "F.SilkS")
+	(descr "Aeolus silkscreen logo (wind mark + Futura wordmark + credit). Graphic-only footprint, ~22.4mm wide (scaled to 80%). Text uses the Futura font face; embed fonts in Board Setup, or it falls back to KiCad's default if Futura is unavailable.")
+	(tags "logo silkscreen aeolus")
+	(attr board_only exclude_from_pos_files exclude_from_bom)
+	(fp_text reference "REF**"
+		(at 0 -8.8 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "a1000000-0000-4000-8000-000000000001")
+		(effects
+			(font (size 1 1) (thickness 0.15))
+		)
+	)
+	(fp_text value "Aeolus_Logo"
+		(at 0 8.8 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "a1000000-0000-4000-8000-000000000002")
+		(effects
+			(font (size 1 1) (thickness 0.15))
+		)
+	)
+	(fp_line
+		(start -7.2 -2.4)
+		(end 7.2 -2.4)
+		(stroke (width 0.96) (type solid))
+		(layer "F.SilkS")
+		(uuid "a1000000-0000-4000-8000-000000000003")
+	)
+	(fp_line
+		(start -7.2 -4.16)
+		(end 3.6 -4.16)
+		(stroke (width 0.96) (type solid))
+		(layer "F.SilkS")
+		(uuid "a1000000-0000-4000-8000-000000000004")
+	)
+	(fp_line
+		(start -7.2 -5.92)
+		(end 0 -5.92)
+		(stroke (width 0.96) (type solid))
+		(layer "F.SilkS")
+		(uuid "a1000000-0000-4000-8000-000000000005")
+	)
+	(fp_text user "AEOLUS"
+		(at 0 1.6 0)
+		(layer "F.SilkS")
+		(uuid "a1000000-0000-4000-8000-000000000006")
+		(effects
+			(font (face "Futura") (size 4.8 4.8) (thickness 0.84) (bold yes))
+		)
+	)
+	(fp_text user "DESIGNED BY AMOGH THIAGARAJAN"
+		(at 0 5.92 0)
+		(layer "F.SilkS")
+		(uuid "a1000000-0000-4000-8000-000000000007")
+		(effects
+			(font (face "Futura") (size 1.28 1.28) (thickness 0.24))
+		)
+	)
+	(embedded_fonts no)
+)

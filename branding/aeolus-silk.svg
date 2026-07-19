@@ -1,0 +1,15 @@
+<svg width="900" height="360" viewBox="0 0 900 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Aeolus silkscreen artwork">
+  <!-- black-on-white = KiCad Image Converter input (black becomes the silk shape) -->
+  <rect width="900" height="360" fill="#ffffff"/>
+  <g fill="#000000">
+    <rect x="332" y="60"  width="236" height="16" rx="8"/>
+    <rect x="332" y="90"  width="176" height="16" rx="8"/>
+    <rect x="332" y="120" width="116" height="16" rx="8"/>
+    <text x="450" y="246" text-anchor="middle"
+          font-family="Futura, 'Century Gothic', sans-serif"
+          font-size="118" font-weight="bold" letter-spacing="3">AEOLUS</text>
+    <text x="450" y="304" text-anchor="middle"
+          font-family="Futura, 'Century Gothic', sans-serif"
+          font-size="20" font-weight="500" letter-spacing="3">DESIGNED&#160;BY&#160;AMOGH&#160;THIAGARAJAN</text>
+  </g>
+</svg>
