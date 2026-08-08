@@ -1,6 +1,6 @@
 # Aeolus
 
-**Aeolus** is a smart, temperature-aware IR fan controller built around an ESP32-C3. It watches room temperature and automatically turns a WOOZOO (or other NEC-protocol) fan on and off over infrared, with a 0.96" OLED status display, a physical control button, and an on-device IR "learn" mode for capturing new remote codes — all on a custom-designed 2-layer PCB.
+**Aeolus** is a smart, temperature-aware IR fan controller built around an ESP32-C3. It watches room temperature and automatically turns a WOOZOO (or other NEC-protocol) fan on and off over infrared, with a 0.96" OLED status display, a physical control button, and an on-device IR "learn" mode for capturing new remote codes — all on a custom-designed 4-layer PCB.
 
 Named after Aeolus, the keeper of the winds.
 
@@ -10,7 +10,7 @@ Named after Aeolus, the keeper of the winds.
 
 ![Aeolus 3D render](images/3d-render.png)
 
-**PCB layout** (2-layer, black soldermask, silkscreen branding)
+**PCB layout** (4-layer, black soldermask, silkscreen branding)
 
 ![Aeolus PCB layout](images/pcb-layout.png)
 
@@ -33,7 +33,7 @@ Aeolus keeps the proven control logic and rebuilds everything around it as a rea
 | **Display** | None (serial monitor only) | 0.96" SSD1306 I²C OLED with live temp/state readout and wind/snow animations |
 | **User input** | None | Physical push button — single/double-tap for mode and manual control |
 | **Remote codes** | Hardcoded in firmware | On-device IR **learn/scan mode** — capture a new remote's code without reflashing |
-| **Build** | Breadboard / protoboard prototype | Custom 2-layer PCB designed in KiCad, black soldermask, silkscreen branding |
+| **Build** | Breadboard / protoboard prototype | Custom 4-layer PCB designed in KiCad (SIG–GND–PWR–SIG stackup), black soldermask, silkscreen branding |
 | **Form factor** | Loose modules and jumper wires | Single integrated board with the OLED and modules socketed |
 
 The transistor-buffered IR transmitter (the key range fix from v1 — extends usable range from a couple of inches to ~10–15 ft) is carried over into the Aeolus hardware.
@@ -46,7 +46,7 @@ The transistor-buffered IR transmitter (the key range fix from v1 — extends us
 - **IR receiver** (38 kHz demodulating, VS1838B-style) for learning remote codes
 - **IR LED (940 nm)** transmitter, transistor-buffered for range
 - **Momentary push button** for manual control / mode switching
-- Custom 2-layer KiCad PCB (`hardware/Aeolus.kicad_pcb` / `.kicad_sch`)
+- Custom 4-layer KiCad PCB (`hardware/Aeolus.kicad_pcb` / `.kicad_sch`)
 
 ### Pin map
 
@@ -86,7 +86,7 @@ Board and framework are configured in [`platformio.ini`](platformio.ini). Librar
 
 The KiCad 9 project is in [`hardware/`](hardware/) (schematic, PCB, custom symbol/footprint libraries). Highlights:
 
-- **2-layer board** — the node count doesn't justify more. See *Known limitations*: routing is currently single-sided, with a ground pour on the back copper still to do.
+- **4-layer board** — SIG–GND–PWR–SIG. `In1.Cu` carries a poured GND plane and `In2.Cu` a poured +3.3V plane. Every ground and supply pad is through-hole, so the plated barrels tie straight into the planes with thermal reliefs and no stitching vias are needed. That is why there is not a single GND trace on `F.Cu` — the plane carries every return, which keeps the loop area of the switched IR LED current away from the high-impedance thermistor sense line.
 - **Custom ESP32-C3 SuperMini symbol and footprint**, pin-labeled to match the actual module.
 - **Custom silkscreen branding** (the "Aeolus" wordmark) generated from the artwork in [`branding/`](branding/).
 - 3D models for the ESP32-C3, OLED, and IR components in `hardware/Aeolus.3dshapes/` for a complete 3D render.
@@ -95,7 +95,7 @@ The KiCad 9 project is in [`hardware/`](hardware/) (schematic, PCB, custom symbo
 
 Stated up front so the files and the description agree:
 
-- **Routing is single-sided.** All 75 copper segments sit on `F.Cu` and the board has zero vias, so ground is carried by surface traces rather than a plane. Pouring ground on `B.Cu` and moving returns onto it is the next hardware task. (The KiCad file still declares a 4-layer stackup in Board Setup — that needs setting back to 2 layers to match.)
+- **Signal routing is single-sided.** All 75 copper segments sit on `F.Cu`; `B.Cu` is unused for routing. This is fine at this node count because power and ground are handled by the inner planes rather than by surface traces.
 - **No decoupling capacitors are placed.** `schematic-guide.txt` calls for 100 nF on the OLED and IR receiver supplies; those parts are not yet in the schematic.
 - **No I²C pull-ups on the board** — the design relies on the ones fitted to the OLED breakout.
 - **The board has not been fabricated.** Everything in `hardware/` is layout and 3D render only; no gerbers, BOM, or assembled unit yet.
