@@ -36,7 +36,7 @@ Aeolus keeps the proven control logic and rebuilds everything around it as a rea
 | **Build** | Breadboard / protoboard prototype | Custom 2-layer PCB designed in KiCad, black soldermask, silkscreen branding |
 | **Form factor** | Loose modules and jumper wires | Single integrated board with the OLED and modules socketed |
 
-The transistor-buffered IR transmitter (the key range fix from v1 — extends usable range from ~1–2 ft to ~10–15 ft) is carried over into the Aeolus hardware.
+The transistor-buffered IR transmitter (the key range fix from v1 — extends usable range from a couple of inches to ~10–15 ft) is carried over into the Aeolus hardware.
 
 ## Hardware
 
